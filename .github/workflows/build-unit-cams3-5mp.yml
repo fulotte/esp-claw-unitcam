@@ -69,6 +69,8 @@ jobs:
       
       - name: Merge binaries
         working-directory: esp-claw-src/application/edge_agent
+        env:
+          EXAMPLE_BOARD: "unit_cams3_5mp"
         run: |
           . /opt/esp/idf/export.sh
           python ../../.gitlab/ci/merge_bin.py

@@ -1,0 +1,77 @@
+name: Build Unit CamS3-5MP Firmware
+
+on:
+  workflow_dispatch:  # 允许手动触发
+    inputs:
+      create_release:
+        description: 'Create release with binaries'
+        required: false
+        default: false
+        type: boolean
+  push:
+    paths:
+      - 'application/edge_agent/boards/m5stack/unit_cams3_5mp/**'
+      - 'application/edge_agent/fatfs_image/**'
+      - '.github/workflows/build-unit-cams3-5mp.yml'
+
+jobs:
+  build:
+    name: Build Unit CamS3-5MP
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/idf:release-v5.5
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install build tools
+        run: |
+          pip install idf_build_apps esp-bmgr-assist
+      
+      - name: Build firmware
+        working-directory: application/edge_agent
+        env:
+          IDF_CCACHE_ENABLE: "1"
+          BATCH_BUILD: "1"
+          V: "0"
+          IDF_CI_BUILD: "1"
+        run: |
+          python ../../.gitlab/ci/build_apps.py . \
+            --config "=" \
+            -t esp32s3 \
+            -r 1 \
+            -vv \
+            --board unit_cams3_5mp \
+            --board-path boards/m5stack
+      
+      - name: Merge binaries
+        working-directory: application/edge_agent
+        run: |
+          python ../../.gitlab/ci/merge_bin.py
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-cams3-5mp-firmware
+          path: |
+            application/edge_agent/build*/**/*.bin
+            application/edge_agent/build*/flash_args
+            application/edge_agent/build*/flash_project_args
+            application/edge_agent/build*/flasher_args.json
+            application/edge_agent/build*/bootloader/*.bin
+            application/edge_agent/build*/partition_table/*.bin
+            application/edge_agent/build*/config/sdkconfig.json
+            application/edge_agent/merged_binary/*.bin
+            application/edge_agent/merged_binary/*.json
+          retention-days: 30
+      
+      - name: Create release
+        if: github.event.inputs.create_release == 'true' || startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            application/edge_agent/merged_binary/*.bin
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

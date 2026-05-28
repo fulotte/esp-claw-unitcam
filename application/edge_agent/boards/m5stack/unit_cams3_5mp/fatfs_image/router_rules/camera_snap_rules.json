@@ -1,0 +1,97 @@
+﻿[
+  {
+    "id": "camera_snap_trigger",
+    "description": "拍照命令路由：匹配常见拍照触发词",
+    "enabled": true,
+    "consume_on_match": true,
+    "match": {
+      "event_type": "message",
+      "event_key": "text",
+      "content_type": "text",
+      "text_patterns": [
+        "拍照",
+        "拍一张",
+        "拍摄照片",
+        "拍个照",
+        "take photo",
+        "take a photo",
+        "snap",
+        "capture"
+      ],
+      "match_mode": "contains"
+    },
+    "actions": [
+      {
+        "type": "send_message",
+        "input": {
+          "channel": "{{event.source_channel}}",
+          "chat_id": "{{event.chat_id}}",
+          "message": "📷 正在拍照，请稍候..."
+        }
+      },
+      {
+        "type": "run_script",
+        "input": {
+          "path": "/fatfs/skills/camera_snap/scripts/camera_snap.lua",
+          "args": {}
+        }
+      },
+      {
+        "type": "send_message",
+        "input": {
+          "channel": "{{event.source_channel}}",
+          "chat_id": "{{event.chat_id}}",
+          "message": "✅ 照片已保存: {{result.path}} ({{result.width}}x{{result.height}}, {{result.bytes}} bytes)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "camera_snap_hd_trigger",
+    "description": "高清拍照命令路由：匹配高清拍照请求",
+    "enabled": true,
+    "consume_on_match": true,
+    "match": {
+      "event_type": "message",
+      "event_key": "text",
+      "content_type": "text",
+      "text_patterns": [
+        "高清拍照",
+        "5MP拍照",
+        "高分辨率拍照",
+        "hd photo",
+        "high resolution photo"
+      ],
+      "match_mode": "contains"
+    },
+    "actions": [
+      {
+        "type": "send_message",
+        "input": {
+          "channel": "{{event.source_channel}}",
+          "chat_id": "{{event.chat_id}}",
+          "message": "📷 正在拍摄 5MP 高清照片，请稍候..."
+        }
+      },
+      {
+        "type": "run_script",
+        "input": {
+          "path": "/fatfs/skills/camera_snap/scripts/camera_snap.lua",
+          "args": {
+            "width": 2592,
+            "height": 1944,
+            "filename": "hd_photo.jpg"
+          }
+        }
+      },
+      {
+        "type": "send_message",
+        "input": {
+          "channel": "{{event.source_channel}}",
+          "chat_id": "{{event.chat_id}}",
+          "message": "✅ 5MP 高清照片已保存: {{result.path}} ({{result.width}}x{{result.height}}, {{result.bytes}} bytes)"
+        }
+      }
+    ]
+  }
+]

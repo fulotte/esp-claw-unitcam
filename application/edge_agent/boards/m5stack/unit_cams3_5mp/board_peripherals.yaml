@@ -1,0 +1,23 @@
+﻿version: 1.0.0
+# Peripherals Configuration for Unit CamS3-5MP
+
+peripherals:
+  # SCCB (I2C) for OV5640 camera sensor communication
+  - name: i2c_master
+    type: i2c
+    role: master
+    config:
+      port: 0
+      pins:
+        sda: 17
+        scl: 41
+      frequency: 100000
+
+  # On-board status LED (GPIO14, active-high)
+  - name: gpio_led
+    type: gpio
+    role: io
+    config:
+      pin: 14
+      mode: GPIO_MODE_OUTPUT
+      default_level: 0

@@ -1,0 +1,5 @@
+board: unit_cams3_5mp
+chip: esp32s3
+version: 1.0.0
+description: "M5Stack Unit CamS3-5MP Camera Module"
+manufacturer: "M5Stack"

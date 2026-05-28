@@ -1,4 +1,4 @@
-name: Build Unit CamS3-5MP Firmware
+﻿name: Build Unit CamS3-5MP Firmware
 
 on:
   workflow_dispatch:
@@ -11,7 +11,6 @@ on:
   push:
     paths:
       - 'board/**'
-      - 'skills/**'
       - '.github/workflows/**'
 
 jobs:
@@ -42,13 +41,10 @@ jobs:
         run: |
           # Copy our board config into the ESP-Claw framework
           cp -r board-config/board/* esp-claw-src/application/edge_agent/boards/
-          cp -r board-config/skills/* esp-claw-src/application/edge_agent/fatfs_image/skills/
           
           # List what we added
           echo "=== Board files ==="
           find esp-claw-src/application/edge_agent/boards/m5stack/unit_cams3_5mp -type f
-          echo "=== Skill files ==="
-          find esp-claw-src/application/edge_agent/fatfs_image/skills/camera_snap -type f
       
       - name: Build firmware
         working-directory: esp-claw-src/application/edge_agent

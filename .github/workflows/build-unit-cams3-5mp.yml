@@ -71,6 +71,7 @@ jobs:
         working-directory: esp-claw-src/application/edge_agent
         env:
           EXAMPLE_BOARD: "unit_cams3_5mp"
+          EXAMPLE_TARGET: "esp32s3"
         run: |
           . /opt/esp/idf/export.sh
           python ../../.gitlab/ci/merge_bin.py

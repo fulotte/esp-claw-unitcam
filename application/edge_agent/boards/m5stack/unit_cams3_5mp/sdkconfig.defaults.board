@@ -38,3 +38,9 @@ CONFIG_ESP_CONSOLE_SECONDARY_NONE=y
 # WiFi: Pre-configured credentials (auto-connect on first boot)
 CONFIG_APP_WIFI_SSID="1626"
 CONFIG_APP_WIFI_PASSWORD="88888888"
+
+# HTTPS/TLS: Only add certificate bundle (not already in main sdkconfig.defaults)
+# All other mbedTLS settings are inherited from the main sdkconfig.defaults
+# which provides: CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC=y, CONFIG_MBEDTLS_HARDWARE_AES=n
+CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y
+CONFIG_MBEDTLS_CERTIFICATE_BUNDLE_DEFAULT_FULL=y
